@@ -7,11 +7,14 @@ use serde_derive::Deserialize;
 use dirs;
 use anyhow::Result;
 
+#[allow(dead_code)]
 mod keystate {
     pub const RELEASED: i32 = 0;
     pub const PRESSED:  i32 = 1;
     pub const HELD:     i32 = 2;
 }
+
+const CONFIG_REL_PATH: &str = "holodeck.toml";
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -22,7 +25,7 @@ pub struct Config {
 fn config() -> Result<Config> {
     let mut s = String::new();
     if let Some(mut config_path) = dirs::config_dir() {
-        config_path.push("deck.toml");
+        config_path.push(CONFIG_REL_PATH);
         let mut file = File::open(&config_path)?;
         file.read_to_string(&mut s)?;
     }
@@ -31,7 +34,7 @@ fn config() -> Result<Config> {
 }
 
 fn main() -> Result<()> {
-    let cfg: Config = config()?;
+    let cfg = config()?;
 
     let mut deck = Device::open(cfg.device.unwrap())?;
     deck.grab()?;
