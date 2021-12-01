@@ -1,36 +1,16 @@
-use std::io::prelude::*;
-use std::fs::File;
 use std::collections::HashMap;
 use std::process::Command;
 
 use evdev::{Device, InputEventKind};
-use serde_derive::Deserialize;
 use anyhow::Result;
+
+mod cfg;
 
 #[allow(dead_code)]
 mod keystate {
     pub const RELEASED: i32 = 0;
     pub const PRESSED:  i32 = 1;
     pub const HELD:     i32 = 2;
-}
-
-const CONFIG_REL_PATH: &str = "holodeck.toml";
-
-#[derive(Deserialize)]
-pub struct Config {
-    pub device: Option<String>,
-    pub binds: HashMap<String, Vec<String>>,
-}
-
-fn config() -> Result<Config> {
-    let mut s = String::new();
-    if let Some(mut config_path) = dirs::config_dir() {
-        config_path.push(CONFIG_REL_PATH);
-        let mut file = File::open(&config_path)?;
-        file.read_to_string(&mut s)?;
-    }
-
-   Ok(toml::from_str::<Config>(&s)?)
 }
 
 fn print_supported_keys(kbd: &Device) -> Result<()> {
@@ -78,7 +58,7 @@ fn parse_hotkeys(kbd: &mut Device, binds: &HashMap<String, Vec<String>>) -> Resu
 }
 
 fn main() -> Result<()> {
-    let cfg = config()?;
+    let cfg = cfg::config()?;
 
     let mut kbd = Device::open(cfg.device.unwrap())?;
     kbd.grab()?;
