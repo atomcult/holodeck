@@ -5,7 +5,6 @@ use std::process::Command;
 
 use evdev::{Device, InputEventKind};
 use serde_derive::Deserialize;
-use dirs;
 use anyhow::Result;
 
 #[allow(dead_code)]
