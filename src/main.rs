@@ -64,6 +64,6 @@ fn main() -> Result<()> {
     kbd.grab()?;
 
     loop {
-        parse_hotkeys(&mut kbd, &cfg.binds)?;
+        parse_hotkeys(&mut kbd, &cfg.profiles["default"])?;
     }
 }
