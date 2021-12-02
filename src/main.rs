@@ -60,10 +60,10 @@ fn parse_hotkeys(kbd: &mut Device, binds: &HashMap<String, Vec<String>>) -> Resu
 fn main() -> Result<()> {
     let cfg = cfg::config()?;
 
-    let mut kbd = Device::open(cfg.device.unwrap())?;
+    let mut kbd = Device::open(cfg.device)?;
     kbd.grab()?;
 
     loop {
-        parse_hotkeys(&mut kbd, &cfg.profiles["default"])?;
+        parse_hotkeys(&mut kbd, &cfg.binds)?;
     }
 }
