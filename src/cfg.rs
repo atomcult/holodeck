@@ -55,13 +55,14 @@ pub fn config() -> Result<Config> {
         });
 
     let s = std::fs::read_to_string(&config)?;
-    let file_config = toml::from_str::<FileConfig>(&s)?;
+    let mut file_config = toml::from_str::<FileConfig>(&s)?;
 
     Ok(Config {
         device: cli.value_of("device").map(|s| s.to_string())
             .or(file_config.device)
             .unwrap(),
-        // FIXME: There's gotta be a way to take ownership of the HashMap without cloning
-        binds: file_config.profiles[cli.value_of("profile").unwrap()].to_owned(),
+        binds: file_config.profiles
+            .remove(cli.value_of("profile").unwrap())
+            .unwrap(),
     })
 }
